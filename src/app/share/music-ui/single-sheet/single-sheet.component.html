@@ -1,0 +1,16 @@
+<ng-container>
+    <a class="cover">
+        <img [src]="list.picUrl" alt="">
+        <div class="bottom">
+            <div class="num">
+                <i class="icon headphone"></i>
+                <span>{{list.playCount | playCount}}</span>
+            </div>
+            <i class="icon play"></i>
+            
+        </div>
+    </a>
+    <span class="dec">
+        {{list.name}}
+    </span>
+</ng-container>

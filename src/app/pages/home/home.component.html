@@ -1,11 +1,7 @@
 <div class="home">
     <app-music-carousel #musicCarousel [activeIndex]="carouselActiveIndex" (changeSlide)="onChangeSlide($event)">
-        <nz-carousel 
-        nzAutoPlay 
-        nzEffect="fade" 
-        [nzDotRender]="musicCarousel.dotRef" 
-        (nzBeforeChange)="onBeforeChange($event)"
-        >
+        <nz-carousel nzAutoPlay nzEffect="fade" [nzDotRender]="musicCarousel.dotRef"
+            (nzBeforeChange)="onBeforeChange($event)">
             <div class="carousel-item" nz-carousel-content *ngFor="let item of banners">
                 <a [href]="item.url" target="_blank" class="banner-item">
                     <img [src]="item.imageUrl" />
@@ -13,4 +9,46 @@
             </div>
         </nz-carousel>
     </app-music-carousel>
+
+    <div class="main">
+        <div class="wrap">
+            <div class="left">
+                <div class="sec">
+                    <!--Hot tags-->
+                    <div class="up">
+                        <div class="navs">
+                            <h2>
+                                <i></i>
+                                <a>Hottest List</a>
+                            </h2>
+                            <nav>
+                                <a *ngFor="let item of hottags">{{item.name}}</a>
+                            </nav>
+                        </div>
+                        <a>
+                            More
+                            <i nz-icon nzType="arrow-right" nzTheme="outline"></i>
+                        </a>
+                        
+                    </div>
+
+
+                    <div class="down">
+                        <div class="down-wrap">
+                            <app-single-sheet 
+                            class="sheet-item"
+                            *ngFor="let item of songlist"
+                            [list] = 'item'
+                            >
+                                
+                            </app-single-sheet>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="right"></div>
+        </div>
+    </div>
 </div>

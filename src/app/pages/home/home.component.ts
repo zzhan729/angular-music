@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { NzCarouselComponent } from 'ng-zorro-antd/carousel';
-import { Banner } from 'src/app/services/data-type/common.types';
+import { Banner, HotTag, SongList } from 'src/app/services/data-type/common.types';
 import { HomeService } from 'src/app/services/home.service';
 
 @Component({
@@ -11,14 +11,35 @@ import { HomeService } from 'src/app/services/home.service';
 export class HomeComponent implements OnInit {
   carouselActiveIndex = 0;
   banners: Banner[]
+  hottags: HotTag[]
+  songlist: SongList[]
   
-  @ViewChild(NzCarouselComponent,{static:true}) private nzCarousel: NzCarouselComponent
-  
+  @ViewChild(NzCarouselComponent, { static: true }) private nzCarousel: NzCarouselComponent;
   constructor(private homeServe: HomeService) {
+    this.getBanners()
+    this.getHotTags()
+    this.getPersonalSheetList()
+  }
+
+  private getBanners(){
     this.homeServe.getBanners().subscribe(banners => {
       this.banners = banners
     })
   }
+
+  private getHotTags(){
+    this.homeServe.getHotTags().subscribe(hottags => {
+      this.hottags = hottags
+      
+    })
+  }
+
+  private getPersonalSheetList(){
+    this.homeServe.getPersonalSheetList().subscribe(songlist => {
+      this.songlist = songlist 
+    })
+  }
+
 
   ngOnInit(): void {
 
@@ -28,8 +49,7 @@ export class HomeComponent implements OnInit {
     this.carouselActiveIndex = to;
   }
 
-  onChangeSlide(type:'pre' | 'next'){
-    this.nzCarousel[type]();
+  onChangeSlide(type:string){
 
   }
   
