@@ -1,7 +1,9 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { NzCarouselComponent } from 'ng-zorro-antd/carousel';
-import { Banner, HotTag, SongList } from 'src/app/services/data-type/common.types';
-import { HomeService } from 'src/app/services/home.service';
+import { map } from 'rxjs/internal/operators';
+import { Banner, HotTag, Singer, SongList } from 'src/app/services/data-type/common.types';
+
 
 @Component({
   selector: 'app-home',
@@ -13,45 +15,33 @@ export class HomeComponent implements OnInit {
   banners: Banner[]
   hottags: HotTag[]
   songlist: SongList[]
-  
+  singers: Singer[]
+
   @ViewChild(NzCarouselComponent, { static: true }) private nzCarousel: NzCarouselComponent;
-  constructor(private homeServe: HomeService) {
-    this.getBanners()
-    this.getHotTags()
-    this.getPersonalSheetList()
-  }
+  constructor(private route: ActivatedRoute){
+      this.route.data.pipe(map(res => res.homeDatas)).subscribe(([banners,hotTags,songlist,singers]) => {
 
-  private getBanners(){
-    this.homeServe.getBanners().subscribe(banners => {
-      this.banners = banners
-    })
-  }
+      this.banners = banners;
+      this.hottags = hotTags;
+      this.songlist = songlist;
+      this.singers = singers;
+  })
+};
 
-  private getHotTags(){
-    this.homeServe.getHotTags().subscribe(hottags => {
-      this.hottags = hottags
-      
-    })
-  }
-
-  private getPersonalSheetList(){
-    this.homeServe.getPersonalSheetList().subscribe(songlist => {
-      this.songlist = songlist 
-    })
-  }
+ 
 
 
   ngOnInit(): void {
 
-     }
+  }
 
-  onBeforeChange({to}){
+  onBeforeChange({ to }) {
     this.carouselActiveIndex = to;
   }
 
-  onChangeSlide(type:string){
-
+  onChangeSlide(type: 'pre' | 'next') {
+    this.nzCarousel[type]();
   }
-  
+
 
 }

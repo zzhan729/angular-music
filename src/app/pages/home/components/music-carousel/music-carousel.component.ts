@@ -9,7 +9,7 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, In
 export class MusicCarouselComponent implements OnInit {
   @Input() activeIndex = 0;
 
-  @Output() changeSlide = new EventEmitter<'pre' | 'next'>();
+  @Output() changeSlide = new EventEmitter< 'pre' | 'next'>();
 
   @ViewChild('dot',{static: true, })dotRef: TemplateRef<any>;
 
@@ -18,7 +18,7 @@ export class MusicCarouselComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  onChangeSlide(type:'pre' | 'next'){
+  onChangeSlide(type: 'pre' | 'next'){
     this.changeSlide.emit(type);
   }
 

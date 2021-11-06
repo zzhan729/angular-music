@@ -48,7 +48,27 @@
             </div>
 
 
-            <div class="right"></div>
+            <div class="right">
+                <app-member-card></app-member-card>
+
+                
+                <div class="settled-singer">
+                    <div class="tit"><b>Popular Singers</b></div>
+                    <div class="list">
+                        <div class="card" *ngFor="let item of singers">
+                            <div class="pic">
+                                <img [src]="item.img1v1Url" [alt]="item.name">
+                            </div>
+                            <div class="txt">
+                                <b class="ellipsis">
+                                    Name: {{item.name}}
+                                </b>
+                                <span>Tracks: {{item.albumSize}}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>

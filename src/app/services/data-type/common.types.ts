@@ -23,3 +23,10 @@ export type SongList= {
     playCount: number
 
 }
+
+export type Singer = {
+    id: number,
+    name: string,
+    img1v1Url: string,
+    albumSize: number
+}
