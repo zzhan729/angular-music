@@ -1,10 +1,9 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient,  } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Banner, HotTag, Singer, SongList } from './data-type/common.types';
+import { Singer, Song } from './data-type/common.types';
 import { API_CONFIG, ServicesModule } from './services.module';
 import { map } from 'rxjs/internal/operators'
-import { type } from 'os';
 
 
 
@@ -21,6 +20,8 @@ export class SingerService {
     .pipe(map((res:{artists: Singer[]}) => res.artists))
     
   }
+
+
 
 
 }
