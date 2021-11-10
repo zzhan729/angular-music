@@ -3,12 +3,13 @@ import { musicSliderStyle } from './music-slider-types';
 
 @Component({
   selector: 'app-music-slider-track',
-  template: '<div class="music-slider-track" [ngStyle]="style"></div>',
+  template: '<div class="music-slider-track" [class.buffer]="musicBuffer" [ngStyle]="style"></div>',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MusicSliderTrackComponent implements OnInit, OnChanges {
   @Input() musicVertical = false;
   @Input() musicLenth: number;
+  @Input() musicBuffer = false;
 
   style: musicSliderStyle ={}
   constructor() { }

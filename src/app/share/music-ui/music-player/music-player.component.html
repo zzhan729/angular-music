@@ -37,10 +37,10 @@
                     </div>
                     <div class="bar">
                         <div class="slider-wrap">
-                            <app-music-slider></app-music-slider>
+                            <app-music-slider [bufferOffset]="bufferOffset" [(ngModel)]="sliderValue" ></app-music-slider>
                         </div>
                         <span class="time">
-                            <em>02:02</em> / 04:35
+                            <em>02:02</em> / 4:05
                         </span>
                     </div>
                 </div>
@@ -51,7 +51,12 @@
                 <div class="ctrl">
                     <i class="volume" title="Volume"></i> 
                     <i class="loop" title="Loop"></i> 
-                    <p class="open"></p>
+                    <p class="open">
+                        <span></span>
+                    </p>
+                    <div class="control-vol">
+                        <app-music-slider [musicVertical] = "true"></app-music-slider>
+                    </div>
                 </div>
             </div>
         </div>

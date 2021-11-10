@@ -21,7 +21,6 @@ export class MusicSliderHandleComponent implements OnInit, OnChanges {
     if(changes.musicOffset){
       this.style[this.musicVertical ? 'bottom' : 'left'] = this.musicOffset + '%'
     }
-    throw new Error("Method is wrong")
   }
 
 }
