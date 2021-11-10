@@ -16,22 +16,16 @@
                     <i class="next"></i>
                 </div>
                 <div class="head">
-                    <img src="http://p3.music.126.net/qIY6e5OyYbvj9kTSx7tNjg==/109951166495101003.jpg" alt="">
+                    <img [src]="picUrl" alt="">
                     <i class="mask"></i>
                 </div>
                 <div class="play">
-                    <div class="words clearfix" hide>
-                        <p class="ellipsis margin bottom none" >Song</p>
-                        <ul class="songs clearfix margin bottom none">
-                            <li>
-                                <a>
-                                    Singer1
-                                </a>/
-                            </li>
-                            <li>
-                                <a>
-                                    Singer1
-                                </a>
+                    <div class="words clearfix">
+                        <p class="ellipsis margin-bottom-none" >{{currentSong?.name}}</p>
+                        <ul class="songs clearfix margin-bottom-none">
+                            <li *ngFor="let item of currentSong?.ar; last as isLast">
+                                <a>{{item.name}}</a>
+                                <span [hidden]="isLast">/</span>
                             </li>
                         </ul>
                     </div>
@@ -40,7 +34,7 @@
                             <app-music-slider [bufferOffset]="bufferOffset" [(ngModel)]="sliderValue" ></app-music-slider>
                         </div>
                         <span class="time">
-                            <em>02:02</em> / 4:05
+                            <em>{{ currentTime | formatTime }}</em> / {{ duration | formatTime}}
                         </span>
                     </div>
                 </div>
@@ -61,4 +55,11 @@
             </div>
         </div>
     </div>
+    <audio #audio
+        [src]="currentSong?.url"
+        (canplay) = "onCanPlay()"
+        (timeupdate)="onTimeUpdate($event)"
+    >
+        
+    </audio>
 </div>
