@@ -1,10 +1,26 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
+import { Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core';
 import { select, Store } from '@ngrx/store';
-import { Song } from 'src/app/services/data-type/common.types';
+import { from, fromEvent, Subscription } from 'rxjs';
+import { Song, SongList } from 'src/app/services/data-type/common.types';
 import { AppStoreModule } from 'src/app/store';
-import { SetCurrentIndex } from 'src/app/store/actions/player.actions';
+import { SetCurrentIndex, SetPlayList, SetPlayMode } from 'src/app/store/actions/player.actions';
 import { getCurrentIndex, getCurrentSong, getPlayer, getPlayList, getPlayMode, getSongList } from 'src/app/store/selectors/player.selector';
+import { shuffle } from 'src/app/utils/array';
 import { PlayMode } from './player-type';
+
+const modeType: PlayMode[] = [{
+  type:'loop',
+  label: 'Loop'
+},{  
+  type:'random',
+  label: 'Shuffle'
+
+},{  
+  type:'single',
+  label: 'Single Loop'
+}
+]
 
 @Component({
   selector: 'app-music-player',
@@ -17,8 +33,8 @@ export class MusicPlayerComponent implements OnInit {
   bufferPercent = 0;
 
   //api get variable
-  songList: [];
-  playList: [];
+  songList: Song[];
+  playList: Song[];
   currentIndex: number;
 
   //current song data
@@ -32,13 +48,28 @@ export class MusicPlayerComponent implements OnInit {
   //song status
   songReady = false
 
+  //Volume Panel
+  volume = 50
+  showVolunmPannel = false
+  //determine if it is the volumn pannel
+  selfClick = false; 
+  private winClick: Subscription
+  
+  //Play Mode
+  currentMode: PlayMode
+  modeCount = 0;
+
+
+ 
+
 
 
   @ViewChild('audio', { static: true }) private audio: ElementRef
   private audioEl: HTMLAudioElement
 
   constructor(
-    private store$: Store<AppStoreModule>
+    private store$: Store<AppStoreModule>,
+    @Inject(DOCUMENT) private doc:Document
   ) {
     const appStore$ = this.store$.pipe(select(getPlayer));
     appStore$.pipe(select(getSongList)).subscribe(list => {
@@ -77,7 +108,20 @@ export class MusicPlayerComponent implements OnInit {
 
   private watchPlayMode(mode: PlayMode) {
     console.log("mode: ", mode);
+    this.currentMode = mode
+    if (this.songList){
+      let list= this.songList.slice();
+      if (mode.type ==="random"){
+        list = shuffle(this.songList)   
+        this.updateCurrentIndex(list, this.currentSong);
+        this.store$.dispatch(SetPlayList({ playList:list }))
+      }
+
+      
+    }
   }
+
+
 
   private watchCurrentSong(song: Song) {
     if (song) {
@@ -89,9 +133,58 @@ export class MusicPlayerComponent implements OnInit {
     console.log("song: ", song);
   }
 
+  private updateCurrentIndex(list:Song[], song:Song){
+    const newIndex = list.findIndex(item => item.id === song.id )
+    this.store$.dispatch(SetCurrentIndex({ currentIndex: newIndex }))
+  }
 
-  onPercentageChange(per) {
+  //Change mode
+  changeMode(){
+    const temp = modeType[++this.modeCount % 3];
+    this.store$.dispatch(SetPlayMode({playMode: temp}))
+  }
+
+
+  onPercentageChange(per: number) {
     this.audioEl.currentTime = this.duration * (per / 100)
+  }
+
+  onVolumeChange(per: number){
+    this.audioEl.volume = per / 100;
+  }
+
+  toggleVolunm(evt: MouseEvent){
+    this.togglePanel()
+  }
+
+  togglePanel(){
+    this.showVolunmPannel = !this.showVolunmPannel
+    if(this.showVolunmPannel){
+      this.bindDocumentClickListner();
+    }else{
+      this.unbindDocumentClickListner();
+    }
+
+  }
+
+  private bindDocumentClickListner(){
+    if(!this.winClick){
+      this.winClick = fromEvent(this.doc, 'click').subscribe(()=>{
+        //if click the other than volumn part
+        if(!this.selfClick){
+          this.showVolunmPannel = false;
+          this.unbindDocumentClickListner();
+        }
+        this.selfClick = false;
+      })
+    }
+  }
+
+  private unbindDocumentClickListner(){
+    if(this.winClick){
+      this.winClick.unsubscribe();
+      this.winClick = null
+    }
 
   }
 
@@ -129,6 +222,9 @@ export class MusicPlayerComponent implements OnInit {
     if (!this.songReady) {
       return
     }
+    if(this.playList.length === 1){
+      this.loop();
+    }
     const newIndex = index < 0 ? this.playList.length - 1 : index
     this.updateIndex(newIndex)
   }
@@ -137,11 +233,23 @@ export class MusicPlayerComponent implements OnInit {
     if (!this.songReady) {
       return
     }
+    if(this.playList.length === 1){
+      this.loop();
+    }
     const newIndex = index >= this.playList.length ? 0 : index
     this.updateIndex(newIndex)
 
   }
 
+  onEnded(){
+    this.playing = false
+    if (this.currentMode.type === "single"){
+      this.loop()
+    } else{
+      this.onNext(this.currentIndex + 1)
+
+    }
+  }
 
   onCanPlay() {
     this.songReady = true
