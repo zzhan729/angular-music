@@ -27,7 +27,6 @@ export class SongService {
     return this.getSongUrl(ids).pipe(map(urls => this.generateSongList(songArr, urls)));
   }
 
-    
 
   generateSongList(songs: Song[], urls: SongUrl[]): Song[]{
     const result = []

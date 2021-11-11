@@ -1,5 +1,5 @@
 import { DOCUMENT } from '@angular/common';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, forwardRef, Inject, Input, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, forwardRef, Inject, Input, OnDestroy, OnInit, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { getElementOffset } from 'ng-zorro-antd/core/util';
 import { fromEvent, merge, Observable, Subscription } from 'rxjs';
@@ -28,6 +28,7 @@ export class MusicSliderComponent implements OnInit, OnDestroy, ControlValueAcce
   @Input() musicMax = 100;
   @Input() bufferOffset: SliderValue = 0
 
+  @Output() musicOnAfterChange = new EventEmitter<SliderValue>()
 
 
   private sliderDom: HTMLDivElement;
@@ -142,7 +143,9 @@ export class MusicSliderComponent implements OnInit, OnDestroy, ControlValueAcce
   }
 
   private onDragEnd(){
+    this.musicOnAfterChange.emit(this.value)
     this.toggleDragMoving(false);
+    this.cdr.markForCheck()
 
   }
 

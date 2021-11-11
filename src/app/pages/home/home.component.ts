@@ -31,7 +31,6 @@ export class HomeComponent implements OnInit {
 
   {
       this.route.data.pipe(map(res => res.homeDatas)).subscribe(([banners, hotTags, songlist, singers]) => {
-
       this.banners = banners;
       this.hottags = hotTags;
       this.songlist = songlist;
