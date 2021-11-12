@@ -1,6 +1,4 @@
-<div class="m-player"
-    (click)="selfClick = true"
->
+<div class="m-player" (click)="selfClick = true">
     <div class="lock">
         <div class="left">
             <i>
@@ -23,7 +21,7 @@
                 </div>
                 <div class="play">
                     <div class="words clearfix">
-                        <p class="ellipsis margin-bottom-none" >{{currentSong?.name}}</p>
+                        <p class="ellipsis margin-bottom-none">{{currentSong?.name}}</p>
                         <ul class="songs clearfix margin-bottom-none">
                             <li *ngFor="let item of currentSong?.ar; last as isLast">
                                 <a>{{item.name}}</a>
@@ -33,7 +31,8 @@
                     </div>
                     <div class="bar">
                         <div class="slider-wrap">
-                            <app-music-slider [bufferOffset]="bufferPercent" [(ngModel)]="percentage" (musicOnAfterChange)="onPercentageChange($event)"></app-music-slider>
+                            <app-music-slider [bufferOffset]="bufferPercent" [(ngModel)]="percentage"
+                                (musicOnAfterChange)="onPercentageChange($event)"></app-music-slider>
                         </div>
                         <span class="time">
                             <em>{{ currentTime | formatTime }}</em> / {{ duration | formatTime}}
@@ -41,28 +40,33 @@
                     </div>
                 </div>
                 <div class="oper">
-                    <i class="like" title="Like"></i> 
-                    <i class="share" title="Share"></i> 
+                    <i class="like" title="Like"></i>
+                    <i class="share" title="Share"></i>
                 </div>
                 <div class="ctrl">
-                    <i class="volume" title="Volume" (click)="toggleVolunm($event)"></i> 
-                    <i [class]="currentMode.type" [title]="currentMode.label" (click)="changeMode()"></i> 
-                    <p class="open">
+                    <i class="volume" title="Volume" (click)="toggleVolunm()"></i>
+                    <i [class]="currentMode.type" [title]="currentMode.label" (click)="changeMode()"></i>
+                    <p class="open" (click)="toggleListPanel()">
                         <span></span>
                     </p>
-                    <div class="control-vol" [hidden] = "!showVolunmPannel">
-                        <app-music-slider [musicVertical] = "true" [(ngModel)]="volume" (ngModelChange)="onVolumeChange($event)"></app-music-slider>
+                    <div class="control-vol" [hidden]="!showVolumnPanel">
+                        <app-music-slider [musicVertical]="true" [(ngModel)]="volume"
+                            (ngModelChange)="onVolumeChange($event)"></app-music-slider>
                     </div>
                 </div>
+                <app-music-play-panel 
+                    [songList]="songList" 
+                    [currentSong]="currentSong"
+                    [currentIndex]="currentIndex"
+                    [show] = "showPanel"
+                    (onClose)="showPanel = false"
+                    (onChangeSong)="onChangeSong($event)"
+                ></app-music-play-panel>
             </div>
         </div>
     </div>
-    <audio #audio
-        [src]="currentSong?.url"
-        (canplay) = "onCanPlay()"
-        (timeupdate)="onTimeUpdate($event)"
-        (ended)="onEnded()"
-    >
-        
+    <audio #audio [src]="currentSong?.url" (canplay)="onCanPlay()" (timeupdate)="onTimeUpdate($event)"
+        (ended)="onEnded()">
+
     </audio>
 </div>

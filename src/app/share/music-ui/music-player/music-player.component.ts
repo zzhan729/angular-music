@@ -50,7 +50,7 @@ export class MusicPlayerComponent implements OnInit {
 
   //Volume Panel
   volume = 50
-  showVolunmPannel = false
+  showVolumnPanel = false
   //determine if it is the volumn pannel
   selfClick = false; 
   private winClick: Subscription
@@ -58,6 +58,9 @@ export class MusicPlayerComponent implements OnInit {
   //Play Mode
   currentMode: PlayMode
   modeCount = 0;
+
+  //List panel
+  showPanel = false;
 
 
  
@@ -107,7 +110,6 @@ export class MusicPlayerComponent implements OnInit {
   }
 
   private watchPlayMode(mode: PlayMode) {
-    console.log("mode: ", mode);
     this.currentMode = mode
     if (this.songList){
       let list= this.songList.slice();
@@ -130,7 +132,6 @@ export class MusicPlayerComponent implements OnInit {
     } else {
       this.duration = 0;
     }
-    console.log("song: ", song);
   }
 
   private updateCurrentIndex(list:Song[], song:Song){
@@ -153,26 +154,34 @@ export class MusicPlayerComponent implements OnInit {
     this.audioEl.volume = per / 100;
   }
 
-  toggleVolunm(evt: MouseEvent){
-    this.togglePanel()
+  toggleVolunm(){
+    this.togglePanel("showVolumnPanel")
+  }
+  toggleListPanel(){
+    if(this.songList.length){
+      this.togglePanel("showPanel")
+    }
+    
   }
 
-  togglePanel(){
-    this.showVolunmPannel = !this.showVolunmPannel
-    if(this.showVolunmPannel){
+  togglePanel(type: string) {
+    this[type] = !this[type];
+    if (this.showVolumnPanel || this.showPanel){
       this.bindDocumentClickListner();
     }else{
       this.unbindDocumentClickListner();
     }
-
   }
+
+  
 
   private bindDocumentClickListner(){
     if(!this.winClick){
       this.winClick = fromEvent(this.doc, 'click').subscribe(()=>{
         //if click the other than volumn part
         if(!this.selfClick){
-          this.showVolunmPannel = false;
+          this.showVolumnPanel = false;
+          this.showPanel = false
           this.unbindDocumentClickListner();
         }
         this.selfClick = false;
@@ -277,4 +286,8 @@ export class MusicPlayerComponent implements OnInit {
   }
 
 
+  //change song
+  onChangeSong(song:Song){
+    this.updateCurrentIndex(this.playList, song)
+  }
 }
