@@ -5,6 +5,7 @@ import { MusicSliderModule } from '../music-slider/music-slider.module';
 import { FormsModule } from '@angular/forms';
 import { FormatTimePipe } from '../../pipes/format-time.pipe';
 import { MusicPlayPanelComponent } from './music-play-panel/music-play-panel.component';
+import { MusicScollComponent } from './music-scoll/music-scoll.component';
 
 
 
@@ -12,7 +13,7 @@ import { MusicPlayPanelComponent } from './music-play-panel/music-play-panel.com
   declarations: [
     MusicPlayerComponent, 
     FormatTimePipe, 
-    MusicPlayPanelComponent
+    MusicPlayPanelComponent, MusicScollComponent
   ],
   imports: [
     CommonModule,
