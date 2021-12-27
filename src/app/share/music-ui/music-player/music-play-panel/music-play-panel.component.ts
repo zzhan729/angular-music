@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, QueryList, SimpleChanges, ViewChildren } from '@angular/core';
 import { Song } from 'src/app/services/data-type/common.types';
+import { findIndex } from 'src/app/utils/array';
 import { MusicScollComponent } from '../music-scoll/music-scoll.component';
 
 @Component({
@@ -10,13 +11,15 @@ import { MusicScollComponent } from '../music-scoll/music-scoll.component';
 export class MusicPlayPanelComponent implements OnInit, OnChanges {
   @Input() songList: Song[];
   @Input() currentSong: Song;
-  @Input() currentIndex: number
+  currentIndex: number
   @Input() show: boolean;
 
   @Output() onClose = new EventEmitter<void>()
   @Output() onChangeSong = new EventEmitter<Song>()
 
-  @ViewChildren(MusicScollComponent) private musicScoll: QueryList<MusicScollComponent>
+  scrollY = 0
+
+  @ViewChildren(MusicScollComponent) private musicScroll: QueryList<MusicScollComponent>
   constructor() { }
 
   ngOnInit(): void {
@@ -25,16 +28,37 @@ export class MusicPlayPanelComponent implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['songList']) {
       console.log('songList', this.songList);
+      this.currentIndex = 0;
     }
     if (changes['currentSong']) {
-      console.log('currentSong', this.currentSong);
+      if (this.currentSong){
+        this.currentIndex = findIndex(this.songList, this.currentSong)
+        if(this.show){
+          this.scrollToCurrent(0)
+        }
+      }
     }
     if (changes['show']) {
       if (!changes['show'].firstChange && this.show)
-        this.musicScoll.first.refreshScroll();
+        this.musicScroll.first.refreshScroll();
     }
   }
+  private scrollToCurrent (speed = 300) {
+    const songListRefs = this.musicScroll.first.el.nativeElement.querySelectorAll('ul li');
+    
+    if (songListRefs.length) {
+      const currentLi = songListRefs[this.currentIndex || 0] as HTMLElement;
+      const offsetTop = currentLi.offsetTop;
+      const offsetHeight = currentLi.offsetHeight;   
+      if (((offsetTop - Math.abs(this.scrollY)) > offsetHeight * 5) || (offsetTop < Math.abs(this.scrollY))) {
+        this.musicScroll.first.scrollToElement(currentLi, speed, false, false);
+      }
+    }
+    
+  }
 }
+
+
 
 
 

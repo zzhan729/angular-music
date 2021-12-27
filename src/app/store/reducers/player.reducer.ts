@@ -1,9 +1,15 @@
-import { state } from "@angular/animations";
 import { Action, createReducer, on } from "@ngrx/store";
 import { Song } from "src/app/services/data-type/common.types";
 import { PlayMode } from "src/app/share/music-ui/music-player/player-type";
-import { SetCurrentIndex, SetPlaying, SetPlayList, SetPlayMode, SetSongList } from "../actions/player.actions";
+import { SetCurrentAction, SetCurrentIndex, SetPlaying, SetPlayList, SetPlayMode, SetSongList } from "../actions/player.actions";
 
+export enum CurrentActions {
+    Add,
+    Play,
+    Delete,
+    Clear,
+    Other
+  }
 
 export type PlayState = {
     // Play status
@@ -21,6 +27,8 @@ export type PlayState = {
     //Current Play Index
     currentIndex: number;
 
+    currentAction: CurrentActions;
+
 }
 
 export const initialStates: PlayState = {
@@ -28,7 +36,8 @@ export const initialStates: PlayState = {
     songList: [],
     playList: [],
     playMode: {type:'loop', label:'Loop'},
-    currentIndex: -1
+    currentIndex: -1,
+    currentAction: CurrentActions.Other
 }
 
 const reducer = createReducer(
@@ -38,7 +47,7 @@ const reducer = createReducer(
     on(SetSongList, (state, { songList }) => ({ ...state,  songList })),
     on(SetPlayMode, (state, { playMode }) => ({ ...state,  playMode })),
     on(SetCurrentIndex, (state, { currentIndex }) => ({ ...state,  currentIndex })),
-    //on(SetCurrentAction, (state, { currentAction }) => ({ ...state,  currentAction }))
+    on(SetCurrentAction, (state, { currentAction }) => ({ ...state,  currentAction }))
     
     )
 

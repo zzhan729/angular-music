@@ -6,7 +6,7 @@ import { Song, SongList } from 'src/app/services/data-type/common.types';
 import { AppStoreModule } from 'src/app/store';
 import { SetCurrentIndex, SetPlayList, SetPlayMode } from 'src/app/store/actions/player.actions';
 import { getCurrentIndex, getCurrentSong, getPlayer, getPlayList, getPlayMode, getSongList } from 'src/app/store/selectors/player.selector';
-import { shuffle } from 'src/app/utils/array';
+import { findIndex, shuffle } from 'src/app/utils/array';
 import { PlayMode } from './player-type';
 
 const modeType: PlayMode[] = [{
@@ -135,7 +135,7 @@ export class MusicPlayerComponent implements OnInit {
   }
 
   private updateCurrentIndex(list:Song[], song:Song){
-    const newIndex = list.findIndex(item => item.id === song.id )
+    const newIndex = findIndex(list,song)
     this.store$.dispatch(SetCurrentIndex({ currentIndex: newIndex }))
   }
 
