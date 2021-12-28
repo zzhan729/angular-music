@@ -2,6 +2,7 @@ import { Component, OnInit, ViewEncapsulation, ChangeDetectionStrategy, ViewChil
 import BScroll from '@better-scroll/core'
 import ScrollBar from '@better-scroll/scroll-bar'
 import MouseWheel from '@better-scroll/mouse-wheel'
+import { timer } from 'rxjs';
 
 BScroll.use(MouseWheel);
 BScroll.use(ScrollBar);
@@ -57,9 +58,9 @@ export class MusicScollComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   refreshScroll(){
-    setTimeout(() => {
-      this.refresh()},
-      this.refreshDelay);
+    timer(this.refreshDelay).subscribe(()=>{
+      this.refresh()
+    })
 
   }
 

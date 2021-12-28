@@ -8,6 +8,7 @@ import { SonglistService } from 'src/app/services/songlist.service';
 import { AppStoreModule } from 'src/app/store';
 import { SetCurrentIndex, SetPlayList, SetSongList } from 'src/app/store/actions/player.actions';
 import { PlayState } from 'src/app/store/reducers/player.reducer';
+import { getPlayer, getPlayMode } from 'src/app/store/selectors/player.selector';
 import { findIndex, shuffle } from 'src/app/utils/array';
 
 
@@ -37,7 +38,8 @@ export class HomeComponent implements OnInit {
       this.songlist = songlist;
       this.singers = singers;
   });
-  this.store$.pipe(select('player')).subscribe(res=>this.playerState = res)
+    this.store$.pipe(select(getPlayer)).subscribe(res=>this.playerState = res)
+  
   }
 
  

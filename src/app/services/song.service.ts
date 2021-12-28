@@ -3,7 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
 import { observable, Observable } from 'rxjs';
 import { map } from 'rxjs/internal/operators';
-import { Song, SongList, SongUrl } from './data-type/common.types';
+import { Lyric, Song, SongList, SongUrl } from './data-type/common.types';
 import { API_CONFIG } from './services.module';
 
 
@@ -39,4 +39,24 @@ export class SongService {
     return result
   }
 
+  getLyric(id: number): Observable<Lyric> {
+    const params = new HttpParams().set('id', id.toString());
+    return this.http.get(this.uri + 'lyric', { params })
+      .pipe(map((res: { [key: string]: { lyric: string; } }) => {
+        try {
+          return {
+            lyric: res.lrc.lyric,
+            tlyric: res.tlyric.lyric,
+          };
+        } catch (err) {
+          return {
+            lyric: '',
+            tlyric: '',
+          };
+        }
+    }));
+  }
+
+  
 }
+

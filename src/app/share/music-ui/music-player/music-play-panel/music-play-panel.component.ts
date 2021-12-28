@@ -1,5 +1,7 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output, QueryList, SimpleChanges, ViewChildren } from '@angular/core';
+import { Component, EventEmitter, Inject, Input, OnChanges, OnInit, Output, QueryList, SimpleChanges, ViewChildren } from '@angular/core';
+import { timer } from 'rxjs';
 import { Song } from 'src/app/services/data-type/common.types';
+import { SongService } from 'src/app/services/song.service';
 import { findIndex } from 'src/app/utils/array';
 import { MusicScollComponent } from '../music-scoll/music-scoll.component';
 
@@ -20,19 +22,20 @@ export class MusicPlayPanelComponent implements OnInit, OnChanges {
   scrollY = 0
 
   @ViewChildren(MusicScollComponent) private musicScroll: QueryList<MusicScollComponent>
-  constructor() { }
+  
+  constructor(private songServe:SongService) { }
 
   ngOnInit(): void {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['songList']) {
-      console.log('songList', this.songList);
       this.currentIndex = 0;
     }
     if (changes['currentSong']) {
       if (this.currentSong){
         this.currentIndex = findIndex(this.songList, this.currentSong)
+        this.updateLyric()
         if(this.show){
           this.scrollToCurrent(0)
         }
@@ -41,8 +44,20 @@ export class MusicPlayPanelComponent implements OnInit, OnChanges {
     if (changes['show']) {
       if (!changes['show'].firstChange && this.show)
         this.musicScroll.first.refreshScroll();
+        timer(80).subscribe(()=>{
+          this.scrollToCurrent(0)
+        })
     }
   }
+
+
+  private updateLyric(){
+    this.songServe.getLyric(this.currentSong.id).subscribe(res=>{
+      console.log("Lyric", res);
+      
+    })
+  }
+
   private scrollToCurrent (speed = 300) {
     const songListRefs = this.musicScroll.first.el.nativeElement.querySelectorAll('ul li');
     

@@ -1,27 +1,28 @@
 
 
-export type Banner = {
+
+export interface Banner  {
     targetId: number,
     url: string,
     imageUrl: string
 
 }
 
-export type HotTag = {
+export interface HotTag  {
     id: number,
     name: string,
     position: number
 
 }
 
-export type Singer = {
+export interface Singer  {
     id: number,
     name: string,
     img1v1Url: string,
     albumSize: number
 }
 
-export type Song ={
+export interface Song {
     id: number,
     name: string,
     url: string,
@@ -30,7 +31,7 @@ export type Song ={
     dt: number
 }
 
-export type SongList= {
+export interface SongList {
     id: number,
     name: string,
     picUrl: string,
@@ -40,8 +41,13 @@ export type SongList= {
 
 }
 
-export type SongUrl ={
+export interface SongUrl {
     id: number,
     url: string,
 
 }
+
+export interface Lyric {
+    lyric: string;
+    tlyric: string;
+  }
