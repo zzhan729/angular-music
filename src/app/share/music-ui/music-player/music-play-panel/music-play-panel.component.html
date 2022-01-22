@@ -41,17 +41,8 @@
         </app-music-scoll>
         <app-music-scoll class="list-lyric">
             <ul>
-                <li>
-                    Chinese <br /> English
-                </li>
-                <li>
-                    Chinese <br /> English
-                </li>
-                <li>
-                    Chinese <br /> English
-                </li>
-                <li>
-                    Chinese <br /> English
+                <li *ngFor="let item of currentLyric">
+                    {{item.txt}} <br /> {{item.txtCn}}
                 </li>
             </ul>
         </app-music-scoll>
