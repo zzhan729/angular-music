@@ -1,5 +1,5 @@
-import { from, zip } from "rxjs";
-import { skip } from 'rxjs/internal/operators';
+import { from, zip, Subject, Subscription, timer } from 'rxjs';
+import { delay, skip, } from 'rxjs/internal/operators';
 import { Lyric } from "src/app/services/data-type/common.types";
 
 
@@ -13,6 +13,10 @@ interface LyricLine extends BaseLyricLine {
     time: number
 }
 
+interface Handler extends BaseLyricLine {
+    lineNum: number
+}
+
 const timeExp = /\[(\d{2}):(\d{2})\.(\d{2,3})\]/
 
 
@@ -22,7 +26,10 @@ export class musicLyric {
     realLine: LyricLine[] = [];
 
     private currentNum:number;
+    private startStamp: number;
+    private pauseStamp: number;
 
+    handler = new Subject<Handler>();
     constructor(lrc: Lyric) {
         this.lrc = lrc;
         this.init();
@@ -39,9 +46,6 @@ export class musicLyric {
     private generLyric() {
         const lines = this.lrc.lyric.split('\n');
         lines.forEach(line => this.makeLine(line));
-        
-        
-
 
     }
 
@@ -105,8 +109,31 @@ export class musicLyric {
 
         this.currentNum = this.findCurrentNum(startTime)
         console.log('currentNum: ',this.currentNum);
-        this.startStamp = Date.now() - startTime
+        this.startStamp = Date.now() - startTime;
+        //this.callHandler()
+        if (this.currentNum < this.realLine.length){
+            this.playReset()
+        }
+    }
 
+
+    private playReset(){
+        let line = this.realLine[this.currentNum]
+        const delay = line.time - (Date.now() - this.startStamp);
+        setTimeout(() => {
+            this.callHandler(this.currentNum++);
+            if(this.currentNum < this.realLine.length && this.playing){
+                this.playReset()
+            }
+        },delay)
+    }
+
+    private callHandler(i: number){
+        this.handler.next({
+            txt: this.realLine[i].txt,
+            txtCn: this.realLine[i].txtCn,
+            lineNum: i
+        })
     }
 
     private findCurrentNum(time:number):number{

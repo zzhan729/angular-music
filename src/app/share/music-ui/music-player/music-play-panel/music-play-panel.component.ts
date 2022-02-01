@@ -71,6 +71,7 @@ export class MusicPlayPanelComponent implements OnInit, OnChanges {
       this.lyric = new musicLyric(res);
       this.currentLyric = this.lyric.realLine;
       console.log("playpanelLines:", this.currentLyric);
+      this.handleLyric()
       this.musicScroll.last.scrollTo(0,0);
 
       if(this.playing){
@@ -81,6 +82,13 @@ export class MusicPlayPanelComponent implements OnInit, OnChanges {
     })
   }
 
+  private handleLyric(){
+    this.lyric.handler.subscribe(({lineNum}) => {
+      console.log("lineNum:",lineNum);
+      
+    }
+      )
+  }
   private scrollToCurrent (speed = 300) {
     const songListRefs = this.musicScroll.first.el.nativeElement.querySelectorAll('ul li');
     
